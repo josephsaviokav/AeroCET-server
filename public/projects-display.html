@@ -296,9 +296,30 @@
             } catch (error) {
                 console.error('Error loading projects:', error);
                 loadingEl.style.display = 'none';
-                errorEl.textContent = `Failed to load projects: ${error.message}`;
+                
+                let errorMessage = 'Failed to load projects. ';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Please check your network connection.';
+                } else if (error.message.includes('HTTP error')) {
+                    errorMessage += 'The server returned an error. Please try again later.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                errorEl.textContent = errorMessage;
                 errorEl.style.display = 'block';
             }
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
 
         function createProjectCard(project) {
@@ -312,21 +333,21 @@
             card.innerHTML = `
                 <div class="project-image">
                     ${hasImage 
-                        ? `<img src="${project.img_path}" alt="${project.project_name}" onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>🚁</div>'">` 
+                        ? `<img src="${escapeHtml(project.img_path)}" alt="${escapeHtml(project.project_name)}" onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>🚁</div>'">` 
                         : '<div class="no-image-placeholder">🚁</div>'}
                 </div>
                 <div class="project-content">
                     <div class="project-header">
-                        <h2 class="project-title">${project.project_name}</h2>
-                        <span class="status-badge ${statusClass}">${project.status}</span>
+                        <h2 class="project-title">${escapeHtml(project.project_name)}</h2>
+                        <span class="status-badge ${statusClass}">${escapeHtml(project.status)}</span>
                     </div>
                     <div class="project-meta">
-                        ${project.project_id ? `<div class="meta-item"><strong>Project ID:</strong> ${project.project_id}</div>` : ''}
-                        ${project.project_head ? `<div class="meta-item"><strong>Lead:</strong> ${project.project_head}</div>` : ''}
-                        ${project.start_date ? `<div class="meta-item"><strong>Start Date:</strong> ${project.start_date}</div>` : ''}
-                        ${project.end_date ? `<div class="meta-item"><strong>End Date:</strong> ${project.end_date}</div>` : ''}
+                        ${project.project_id ? `<div class="meta-item"><strong>Project ID:</strong> ${escapeHtml(project.project_id)}</div>` : ''}
+                        ${project.project_head ? `<div class="meta-item"><strong>Lead:</strong> ${escapeHtml(project.project_head)}</div>` : ''}
+                        ${project.start_date ? `<div class="meta-item"><strong>Start Date:</strong> ${escapeHtml(project.start_date)}</div>` : ''}
+                        ${project.end_date ? `<div class="meta-item"><strong>End Date:</strong> ${escapeHtml(project.end_date)}</div>` : ''}
                     </div>
-                    <p class="project-description">${project.description}</p>
+                    <p class="project-description">${escapeHtml(project.description)}</p>
                 </div>
             `;
 
