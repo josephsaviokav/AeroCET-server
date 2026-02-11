@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroCET Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .status-completed {
+            background: #48bb78;
+            color: white;
+        }
+
+        .status-ongoing {
+            background: #ed8936;
+            color: white;
+        }
+
+        .project-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .meta-item strong {
+            margin-right: 8px;
+            color: #2d3748;
+            min-width: 80px;
+        }
+
+        .project-description {
+            color: #4a5568;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            text-align: justify;
+            flex-grow: 1;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5rem;
+            padding: 50px;
+        }
+
+        .error {
+            text-align: center;
+            color: #fc8181;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        .no-image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .project-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 0 20px 40px 20px;
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚁 AeroCET Projects</h1>
+            <p>Innovative Aerospace and Drone Technology Projects</p>
+        </div>
+
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="stat-item">
+                <span class="stat-number" id="totalProjects">0</span>
+                <span class="stat-label">Total Projects</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="completedProjects">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="ongoingProjects">0</span>
+                <span class="stat-label">Ongoing</span>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Loading projects...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="projectsGrid" class="projects-grid"></div>
+    </div>
+
+    <script>
+        // Configuration constants
+        const API_ENDPOINT = '/api/projects';
+        const STATUS = {
+            COMPLETED: 'Completed',
+            ONGOING: 'Ongoing'
+        };
+
+        async function loadProjects() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const projectsGridEl = document.getElementById('projectsGrid');
+            const statsBarEl = document.getElementById('statsBar');
+
+            try {
+                const response = await fetch(API_ENDPOINT);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const projects = await response.json();
+                
+                loadingEl.style.display = 'none';
+                
+                if (!projects || projects.length === 0) {
+                    errorEl.textContent = 'No projects found.';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                // Calculate stats
+                const stats = projects.reduce((acc, p) => {
+                    if (p.status === STATUS.COMPLETED) acc.completed++;
+                    else if (p.status === STATUS.ONGOING) acc.ongoing++;
+                    return acc;
+                }, { completed: 0, ongoing: 0 });
+                
+                document.getElementById('totalProjects').textContent = projects.length;
+                document.getElementById('completedProjects').textContent = stats.completed;
+                document.getElementById('ongoingProjects').textContent = stats.ongoing;
+                statsBarEl.style.display = 'flex';
+
+                // Display projects
+                projects.forEach(project => {
+                    const card = createProjectCard(project);
+                    projectsGridEl.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                loadingEl.style.display = 'none';
+                
+                let errorMessage = 'Failed to load projects. ';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage += 'Please check your network connection.';
+                } else if (error.message.includes('HTTP error')) {
+                    errorMessage += 'The server returned an error. Please try again later.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                errorEl.textContent = errorMessage;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function sanitizeUrl(url) {
+            if (!url) return '';
+            // Only allow http, https, and relative paths
+            const urlStr = url.toString().trim();
+            if (urlStr.startsWith('/') || urlStr.startsWith('./') || urlStr.startsWith('../')) {
+                return urlStr; // Relative paths are safe
+            }
+            try {
+                const parsed = new URL(urlStr);
+                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                    return urlStr;
+                }
+            } catch (e) {
+                // Invalid URL
+            }
+            return ''; // Return empty string for invalid URLs
+        }
+
+        function createPlaceholder() {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'no-image-placeholder';
+            placeholder.textContent = '🚁';
+            return placeholder;
+        }
+
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            // Determine status class with validation
+            let statusClass = 'status-ongoing'; // default
+            if (project.status === STATUS.COMPLETED) {
+                statusClass = 'status-completed';
+            } else if (project.status === STATUS.ONGOING) {
+                statusClass = 'status-ongoing';
+            }
+            
+            const hasImage = project.img_path && project.img_path.trim() !== '';
+
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'project-image';
+
+            if (hasImage) {
+                const sanitizedUrl = sanitizeUrl(project.img_path);
+                if (sanitizedUrl) {
+                    const img = document.createElement('img');
+                    img.src = sanitizedUrl;
+                    img.alt = escapeHtml(project.project_name);
+                    img.addEventListener('error', function() {
+                        this.parentElement.replaceChild(createPlaceholder(), this);
+                    });
+                    imageContainer.appendChild(img);
+                } else {
+                    imageContainer.appendChild(createPlaceholder());
+                }
+            } else {
+                imageContainer.appendChild(createPlaceholder());
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'project-content';
+            contentDiv.innerHTML = `
+                <div class="project-header">
+                    <h2 class="project-title">${escapeHtml(project.project_name)}</h2>
+                    <span class="status-badge ${statusClass}">${escapeHtml(project.status)}</span>
+                </div>
+                <div class="project-meta">
+                    ${project.project_id ? `<div class="meta-item"><strong>Project ID:</strong> ${escapeHtml(project.project_id)}</div>` : ''}
+                    ${project.project_head ? `<div class="meta-item"><strong>Lead:</strong> ${escapeHtml(project.project_head)}</div>` : ''}
+                    ${project.start_date ? `<div class="meta-item"><strong>Start Date:</strong> ${escapeHtml(project.start_date)}</div>` : ''}
+                    ${project.end_date ? `<div class="meta-item"><strong>End Date:</strong> ${escapeHtml(project.end_date)}</div>` : ''}
+                </div>
+                <p class="project-description">${escapeHtml(project.description)}</p>
+            `;
+
+            card.appendChild(imageContainer);
+            card.appendChild(contentDiv);
+
+            return card;
+        }
+
+        // Load projects when page loads
+        document.addEventListener('DOMContentLoaded', loadProjects);
+    </script>
+</body>
+</html>
