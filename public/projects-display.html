@@ -335,8 +335,8 @@
 
             if (hasImage) {
                 const img = document.createElement('img');
-                img.src = project.img_path;
-                img.alt = project.project_name;
+                img.src = escapeHtml(project.img_path);
+                img.alt = escapeHtml(project.project_name);
                 img.addEventListener('error', function() {
                     const placeholder = document.createElement('div');
                     placeholder.className = 'no-image-placeholder';
