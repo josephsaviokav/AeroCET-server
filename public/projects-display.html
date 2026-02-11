@@ -322,6 +322,24 @@
                 .replace(/'/g, "&#039;");
         }
 
+        function sanitizeUrl(url) {
+            if (!url) return '';
+            // Only allow http, https, and relative paths
+            const urlStr = url.toString().trim();
+            if (urlStr.startsWith('/') || urlStr.startsWith('./') || urlStr.startsWith('../')) {
+                return urlStr; // Relative paths are safe
+            }
+            try {
+                const parsed = new URL(urlStr);
+                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+                    return urlStr;
+                }
+            } catch (e) {
+                // Invalid URL
+            }
+            return ''; // Return empty string for invalid URLs
+        }
+
         function createProjectCard(project) {
             const card = document.createElement('div');
             card.className = 'project-card';
@@ -334,16 +352,24 @@
             imageContainer.className = 'project-image';
 
             if (hasImage) {
-                const img = document.createElement('img');
-                img.src = escapeHtml(project.img_path);
-                img.alt = escapeHtml(project.project_name);
-                img.addEventListener('error', function() {
+                const sanitizedUrl = sanitizeUrl(project.img_path);
+                if (sanitizedUrl) {
+                    const img = document.createElement('img');
+                    img.src = sanitizedUrl;
+                    img.alt = escapeHtml(project.project_name);
+                    img.addEventListener('error', function() {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'no-image-placeholder';
+                        placeholder.textContent = '🚁';
+                        this.parentElement.replaceChild(placeholder, this);
+                    });
+                    imageContainer.appendChild(img);
+                } else {
                     const placeholder = document.createElement('div');
                     placeholder.className = 'no-image-placeholder';
                     placeholder.textContent = '🚁';
-                    this.parentElement.replaceChild(placeholder, this);
-                });
-                imageContainer.appendChild(img);
+                    imageContainer.appendChild(placeholder);
+                }
             } else {
                 const placeholder = document.createElement('div');
                 placeholder.className = 'no-image-placeholder';
