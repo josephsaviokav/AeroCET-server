@@ -255,6 +255,13 @@
     </div>
 
     <script>
+        // Configuration constants
+        const API_ENDPOINT = '/api/projects';
+        const STATUS = {
+            COMPLETED: 'Completed',
+            ONGOING: 'Ongoing'
+        };
+
         async function loadProjects() {
             const loadingEl = document.getElementById('loading');
             const errorEl = document.getElementById('error');
@@ -262,7 +269,7 @@
             const statsBarEl = document.getElementById('statsBar');
 
             try {
-                const response = await fetch('/api/projects');
+                const response = await fetch(API_ENDPOINT);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -280,8 +287,8 @@
 
                 // Calculate stats
                 const stats = projects.reduce((acc, p) => {
-                    if (p.status === 'Completed') acc.completed++;
-                    else if (p.status === 'Ongoing') acc.ongoing++;
+                    if (p.status === STATUS.COMPLETED) acc.completed++;
+                    else if (p.status === STATUS.ONGOING) acc.ongoing++;
                     return acc;
                 }, { completed: 0, ongoing: 0 });
                 
@@ -354,7 +361,13 @@
             const card = document.createElement('div');
             card.className = 'project-card';
 
-            const statusClass = project.status === 'Completed' ? 'status-completed' : 'status-ongoing';
+            // Determine status class with validation
+            let statusClass = 'status-ongoing'; // default
+            if (project.status === STATUS.COMPLETED) {
+                statusClass = 'status-completed';
+            } else if (project.status === STATUS.ONGOING) {
+                statusClass = 'status-ongoing';
+            }
             
             const hasImage = project.img_path && project.img_path.trim() !== '';
 
