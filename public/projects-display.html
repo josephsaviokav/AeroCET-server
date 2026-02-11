@@ -279,12 +279,15 @@
                 }
 
                 // Calculate stats
-                const completed = projects.filter(p => p.status === 'Completed').length;
-                const ongoing = projects.filter(p => p.status === 'Ongoing').length;
+                const stats = projects.reduce((acc, p) => {
+                    if (p.status === 'Completed') acc.completed++;
+                    else if (p.status === 'Ongoing') acc.ongoing++;
+                    return acc;
+                }, { completed: 0, ongoing: 0 });
                 
                 document.getElementById('totalProjects').textContent = projects.length;
-                document.getElementById('completedProjects').textContent = completed;
-                document.getElementById('ongoingProjects').textContent = ongoing;
+                document.getElementById('completedProjects').textContent = stats.completed;
+                document.getElementById('ongoingProjects').textContent = stats.ongoing;
                 statsBarEl.style.display = 'flex';
 
                 // Display projects
@@ -340,6 +343,13 @@
             return ''; // Return empty string for invalid URLs
         }
 
+        function createPlaceholder() {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'no-image-placeholder';
+            placeholder.textContent = '🚁';
+            return placeholder;
+        }
+
         function createProjectCard(project) {
             const card = document.createElement('div');
             card.className = 'project-card';
@@ -358,23 +368,14 @@
                     img.src = sanitizedUrl;
                     img.alt = escapeHtml(project.project_name);
                     img.addEventListener('error', function() {
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'no-image-placeholder';
-                        placeholder.textContent = '🚁';
-                        this.parentElement.replaceChild(placeholder, this);
+                        this.parentElement.replaceChild(createPlaceholder(), this);
                     });
                     imageContainer.appendChild(img);
                 } else {
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'no-image-placeholder';
-                    placeholder.textContent = '🚁';
-                    imageContainer.appendChild(placeholder);
+                    imageContainer.appendChild(createPlaceholder());
                 }
             } else {
-                const placeholder = document.createElement('div');
-                placeholder.className = 'no-image-placeholder';
-                placeholder.textContent = '🚁';
-                imageContainer.appendChild(placeholder);
+                imageContainer.appendChild(createPlaceholder());
             }
 
             const contentDiv = document.createElement('div');
