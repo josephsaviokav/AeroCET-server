@@ -330,26 +330,45 @@
             
             const hasImage = project.img_path && project.img_path.trim() !== '';
 
-            card.innerHTML = `
-                <div class="project-image">
-                    ${hasImage 
-                        ? `<img src="${escapeHtml(project.img_path)}" alt="${escapeHtml(project.project_name)}" onerror="this.parentElement.innerHTML='<div class=\\'no-image-placeholder\\'>🚁</div>'">` 
-                        : '<div class="no-image-placeholder">🚁</div>'}
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'project-image';
+
+            if (hasImage) {
+                const img = document.createElement('img');
+                img.src = project.img_path;
+                img.alt = project.project_name;
+                img.addEventListener('error', function() {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'no-image-placeholder';
+                    placeholder.textContent = '🚁';
+                    this.parentElement.replaceChild(placeholder, this);
+                });
+                imageContainer.appendChild(img);
+            } else {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'no-image-placeholder';
+                placeholder.textContent = '🚁';
+                imageContainer.appendChild(placeholder);
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'project-content';
+            contentDiv.innerHTML = `
+                <div class="project-header">
+                    <h2 class="project-title">${escapeHtml(project.project_name)}</h2>
+                    <span class="status-badge ${statusClass}">${escapeHtml(project.status)}</span>
                 </div>
-                <div class="project-content">
-                    <div class="project-header">
-                        <h2 class="project-title">${escapeHtml(project.project_name)}</h2>
-                        <span class="status-badge ${statusClass}">${escapeHtml(project.status)}</span>
-                    </div>
-                    <div class="project-meta">
-                        ${project.project_id ? `<div class="meta-item"><strong>Project ID:</strong> ${escapeHtml(project.project_id)}</div>` : ''}
-                        ${project.project_head ? `<div class="meta-item"><strong>Lead:</strong> ${escapeHtml(project.project_head)}</div>` : ''}
-                        ${project.start_date ? `<div class="meta-item"><strong>Start Date:</strong> ${escapeHtml(project.start_date)}</div>` : ''}
-                        ${project.end_date ? `<div class="meta-item"><strong>End Date:</strong> ${escapeHtml(project.end_date)}</div>` : ''}
-                    </div>
-                    <p class="project-description">${escapeHtml(project.description)}</p>
+                <div class="project-meta">
+                    ${project.project_id ? `<div class="meta-item"><strong>Project ID:</strong> ${escapeHtml(project.project_id)}</div>` : ''}
+                    ${project.project_head ? `<div class="meta-item"><strong>Lead:</strong> ${escapeHtml(project.project_head)}</div>` : ''}
+                    ${project.start_date ? `<div class="meta-item"><strong>Start Date:</strong> ${escapeHtml(project.start_date)}</div>` : ''}
+                    ${project.end_date ? `<div class="meta-item"><strong>End Date:</strong> ${escapeHtml(project.end_date)}</div>` : ''}
                 </div>
+                <p class="project-description">${escapeHtml(project.description)}</p>
             `;
+
+            card.appendChild(imageContainer);
+            card.appendChild(contentDiv);
 
             return card;
         }
