@@ -6,11 +6,7 @@
         "start_date":"",
         "end_date": "",
         "status": "Completed",
-<<<<<<< HEAD
         "img_path":"/public/projects/auto.jpeg",
-=======
-        "img_path":["/public/projects/autonomous_drone.jpeg","/public/projects/autonomous_dual_drone.jpeg"],
->>>>>>> 0b9cdef06c0baeaa7639ddfb4bc868b616008f21
         "description":"We designed and fabricated an autonomous delivery drone capable of executing secure deliveries across varied terrains and environmental conditions. The system incorporates a pre-scanning safety and verification mechanism that uses precise location data and onboard camera feedback to validate the delivery zone before payload release. Autonomous navigation and controlled descent ensure accurate positioning and operational reliability. The drone is engineered for robustness, allowing stable performance under harsh conditions. This project demonstrates the application of autonomous aerial systems and sensor-based decision-making in real-world logistics."
     },
     {
@@ -20,11 +16,7 @@
         "start_date":"",
         "end_date": "",
         "status": "Completed",
-<<<<<<< HEAD
         "img_path":"/public/projects/nonauto.jpeg",
-=======
-        "img_path":[],
->>>>>>> 0b9cdef06c0baeaa7639ddfb4bc868b616008f21
         "description":"Our dual-drone autonomous system is designed for precision agriculture, enabling efficient crop monitoring and targeted pesticide application. The system employs two coordinated drones: one autonomous quadcopter equipped with a camera, Raspberry Pi, and navigation modules to survey fields, detect crop stress through visual analysis, and tag affected locations using GPS data. These coordinates are wirelessly transmitted to a second hexacopter drone integrated with a precision spraying mechanism, which autonomously navigates to the identified zones and applies pesticides selectively. By enabling targeted intervention, the system significantly reduces chemical usage, labor requirements, and environmental impact. The project demonstrates a scalable, sensor-driven approach to sustainable smart farming."
     },
     {
